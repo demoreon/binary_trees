@@ -1,67 +1,60 @@
 #include "binary_trees.h"
 
 /**
- * recursive_height - measures the height of a binary tree
+ * binary_tree_height - measures the height of a binary tree
+ * @tree: pointer to the root node of the tree to measure the height of
  *
- * @tree: tree root
- * Return: height
+ * Return: the height of the tree. If tree is NULL, return 0
  */
-size_t recursive_height(const binary_tree_t *tree)
+size_t binary_tree_height(const binary_tree_t *tree)
 {
-	size_t left = 0;
-	size_t right = 0;
+	size_t left, right;
 
 	if (tree == NULL)
 		return (0);
-
-	left = recursive_height(tree->left);
-	right = recursive_height(tree->right);
-
-	if (left > right)
-		return (left + 1);
-
-	return (right + 1);
+	left = binary_tree_height(tree->left);
+	right = binary_tree_height(tree->right);
+	if (left >= right)
+		return (1 + left);
+	return (1 + right);
 }
 
 /**
- * print_level - prints nodes at the same level
+ * binary_tree_level - perform a function on a specific level of a binary tree
+ * @tree: pointer to the root of the tree
+ * @l: level of the tree to perform a function on
+ * @func: function to perform
  *
- * @tree: tree root
- * @level: level node
- * @func: pointer to a function
- * Return: no return
+ * Return: void
  */
-void print_level(const binary_tree_t *tree, int level, void (*func)(int))
+void binary_tree_level(const binary_tree_t *tree, size_t l, void (*func)(int))
 {
 	if (tree == NULL)
 		return;
-
-	if (level == 1)
+	if (l == 1)
 		func(tree->n);
-	else if (level > 1)
+	else if (l > 1)
 	{
-		print_level(tree->left, level - 1, func);
-		print_level(tree->right, level - 1, func);
+		binary_tree_level(tree->left, l - 1, func);
+		binary_tree_level(tree->right, l - 1, func);
 	}
 }
 
 /**
- * binary_tree_levelorder - prints data in level-order traversal
+ * binary_tree_levelorder - traverses a binary tree using level-order traversal
+ * @tree: pointer to the root node of the tree to traverse
+ * @func: pointer to a function to call for each node.
+ * The value in the node must be passed as a parameter to this function
  *
- * @tree: tree root
- * @func: pointer to a function
- * Return: no return
+ * Return: void
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	size_t height;
-	size_t i;
+	size_t height, i;
 
 	if (tree == NULL || func == NULL)
 		return;
-
-	height = recursive_height(tree);
-
+	height = binary_tree_height(tree);
 	for (i = 1; i <= height; i++)
-		print_level(tree, i, func);
+		binary_tree_level(tree, i, func);
 }
